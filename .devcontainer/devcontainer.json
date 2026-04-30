@@ -1,6 +1,6 @@
 // Copyright The Project Template Contributors
 {
-  "name": "project-template",
+  "name": "project_template",
   "build": {
     "dockerfile": "Dockerfile"
   },

@@ -27,9 +27,24 @@
 
 描述足够支持实施计划的设计细节。
 
+```mermaid
+flowchart LR
+  Input["TODO：输入/触发"] --> System["TODO：本功能/子系统"]
+  System --> Output["TODO：输出/影响"]
+```
+
 ## 数据模型 / API / UI
 
 TODO：只保留适用的小节。
+
+## 硬件 / 生产 / 供应商 / SOP
+
+> 不适用时删除本节。
+
+- 硬件设计文档：TODO
+- 生产或部署 SOP：TODO
+- 供应商记录或第三方交付物：TODO
+- 需要更新的图表：TODO：Mermaid / PlantUML
 
 ## 风险
 

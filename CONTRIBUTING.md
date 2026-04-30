@@ -46,6 +46,8 @@
 | CI 门禁或发布要求 | `README.md`、`AGENTS.md`、workflow 文档 |
 | 生成代码流程 | `README.md` 或所属模块的局部 `AGENTS.md` |
 | 环境变量 | `README.md` 与 `.env.example` |
+| 第三方源码、submodule、vendor copy 或供应商交付物 | `README.md`、`docs/conventions.md`、`docs/suppliers/` |
+| 硬件设计、生产流程、测试夹具或 SOP | `README.md`、`docs/hardware/`、`docs/production/`、`docs/sop/` |
 
 ## Review 重点
 

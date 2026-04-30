@@ -179,8 +179,11 @@ AI agent 是正式贡献者，必须遵守与人类相同的规则。
 
 语言：
 
-- TODO：明确本项目的文档、注释、提交信息、用户可见文案语言策略。
-- 推荐默认值：项目文档、注释、ADR、RFC、计划、提交信息使用中文；代码标识符遵循对应语言生态惯例。
+- 本项目以中文为首选语言。项目文档、注释、ADR、RFC、Spec、Plan、提交信息、PR 描述和用户可见文案优先使用中文。
+- 技术术语、行业术语、专有名词、缩写、协议名、标准名、产品名、代码变量、函数名、类型名、模块名、文件名、命令、配置键、环境变量等保持英文或其所在生态的通用写法。
+- 不为了“全中文”而翻译已经稳定的英文术语。例如 API、SDK、CLI、CI、CD、HTTP、JSON、token、schema、runtime、adapter、plugin、handler、callback、middleware 等可直接使用英文。
+- 代码标识符遵循对应语言生态惯例，例如 `snake_case`、`camelCase`、`PascalCase`、`SCREAMING_SNAKE_CASE`。
+- 如果中文解释和英文术语同时出现，优先采用“中文说明 + 英文术语”的形式，例如“运行时 runtime”“适配器 adapter”“模式 schema”。
 
 Git：
 

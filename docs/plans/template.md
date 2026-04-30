@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # YYYY-MM-DD 主题实施计划
 
 > **状态**：草案
@@ -32,4 +34,3 @@
 ## 完成说明
 
 TODO：完成后补充 commit SHA、PR 链接，或说明被哪个计划取代。
-

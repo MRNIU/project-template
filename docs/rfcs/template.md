@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # RFC-NNNN: 标题
 
 - **状态**：草案 | 讨论中 | 已接受 | 已拒绝 | 已实施
@@ -33,4 +35,3 @@
 - [ ] 步骤 1
 - [ ] 步骤 2
 - [ ] 步骤 3
-

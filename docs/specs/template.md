@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # YYYY-MM-DD 主题设计
 
 **日期**：YYYY-MM-DD
@@ -40,4 +42,3 @@ TODO：只保留适用的小节。
 ## 实施计划链接
 
 TODO
-

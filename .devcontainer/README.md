@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # Dev Container
 
 本目录负责开发容器实现。

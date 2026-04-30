@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # 贡献指南
 
 > **模板使用说明**

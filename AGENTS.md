@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # AGENTS.md
 
 > **模板使用说明**

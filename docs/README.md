@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # docs/
 
 本目录保存项目文档。

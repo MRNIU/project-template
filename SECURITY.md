@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # Security Policy
 
 > **模板使用说明**

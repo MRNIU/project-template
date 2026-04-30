@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # Git 与 Commit 规范
 
 > **模板使用说明**

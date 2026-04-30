@@ -1,3 +1,5 @@
+# Copyright The Project Template Contributors
+
 # Normalize text files for cross-platform development.
 * text=auto eol=lf
 

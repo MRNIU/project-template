@@ -1,3 +1,5 @@
+# Copyright The Project Template Contributors
+#
 <type>(<scope>): <subject>
 
 # type: feat|fix|refactor|perf|test|docs|build|ci|chore|style|revert

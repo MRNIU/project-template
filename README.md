@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # 项目名称
 
 TODO：用一段话说明本项目是什么。

@@ -1,3 +1,5 @@
+<!-- Copyright The Project Template Contributors -->
+
 # ADR-NNNN: 标题
 
 - **状态**：提议中 | 已接受 | 已实施 | 已废弃 | 已取代
@@ -47,4 +49,3 @@
 ## 备注
 
 TODO：参考资料、实施说明、后续计划。
-

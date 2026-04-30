@@ -81,5 +81,6 @@ __pycache__/
 # Local AI/tooling state
 .claude/
 .codex/
+.superpowers/
 .aider*
 .worktrees/

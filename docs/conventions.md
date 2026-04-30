@@ -60,6 +60,7 @@ repo/
 - 大模块如果有独立架构边界、依赖约束或修改 checklist，应在模块根目录放一个局部 `AGENTS.md`，推荐从 `docs/templates/local-AGENTS.md` 复制后改写。
 - 第三方源码、固件、C/C++ 库、硬件供应商 SDK 等可放在 `3rd/`，优先使用 git submodule 记录来源和版本。Rust Cargo、npm、pip、Go modules、Maven 等自带包管理器的依赖不放入 `3rd/`，应由对应 manifest/lockfile 管理。
 - 涉及硬件设计、生产、供应商或 SOP 的项目，应建立对应目录或文档，并在 `README.md` 的运行模式与验证模式中链接。
+- 本地 AI/agent 会话状态不进 git；默认忽略 `.claude/`、`.codex/`、`.superpowers/`、`.aider*` 和 `.worktrees/`。
 
 ## 开发环境
 

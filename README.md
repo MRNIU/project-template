@@ -56,6 +56,10 @@ TODO：说明如何打开 Dev Container，以及本项目额外的 `postCreateCo
 ## 项目文档
 
 - `AGENTS.md`：人类和 AI agent 的项目规则
+- `CONTRIBUTING.md`：贡献流程和 PR 要求
+- `SECURITY.md`：安全漏洞报告流程
+- `docs/conventions.md`：语言、文档、测试、安全等项目约定
+- `docs/git.md`：Git 工作流和 commit 规范
 - `docs/adr/`：架构决策
 - `docs/rfcs/`：提案
 - `docs/specs/`：设计文档
@@ -67,4 +71,4 @@ TODO：说明如何打开 Dev Container，以及本项目额外的 `postCreateCo
 
 ## Commit 规范
 
-默认采用 Conventional Commits 风格，subject 中文优先，type/scope 保持英文，例如 `feat(api): 支持 OAuth callback`。详细规则见 `AGENTS.md`。
+默认采用 Conventional Commits 风格，subject 中文优先，type/scope 保持英文，例如 `feat(api): 支持 OAuth callback`。详细规则见 `docs/git.md`。

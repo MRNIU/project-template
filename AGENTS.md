@@ -4,17 +4,15 @@
 >
 > 本文件来自公司项目模板，不是可原样长期保留的项目规则。
 >
-> 从模板创建新项目后，必须根据项目实际情况修改本文件，至少补齐项目概览、仓库结构、开发环境、架构、硬约束、协作约定、测试策略和项目状态。凡是带 `TODO` 的内容都必须替换；不适用于当前项目的规则应删除或改写；新增的项目级约定应写入本文件或对应目录的局部 `AGENTS.md`。
+> 从模板创建新项目后，必须根据项目实际情况修改本文件，至少补齐项目概览、架构边界、项目级硬约束、AI agent 工作流和项目状态。凡是带 `TODO` 的内容都必须替换；不适用于当前项目的规则应删除或改写；新增的项目级约定应写入本文件、`docs/conventions.md` 或对应目录的局部 `AGENTS.md`。
 >
 > 若本文件仍保留明显模板占位内容，不应视为项目协作规则已经完成。
 
-本文件是本项目面向**人类贡献者和 AI agent** 的项目级真值源，记录项目约定、架构边界、协作流程和文档纪律。
+本文件是本项目面向**人类贡献者和 AI agent** 的项目级入口与真值源。
 
-当 `README.md`、ADR、RFC、计划文档、设计文档、代码注释或 AI 记忆与本文件冲突时，**以本文件为准**。冲突本身是一个文档缺陷，发现后应在同一个变更中修正。
+当 `README.md`、贡献指南、ADR、RFC、计划文档、设计文档、代码注释或 AI 记忆与本文件冲突时，**以本文件为准**。冲突本身是一个文档缺陷，发现后应在同一个变更中修正。
 
 ## 项目概览
-
-> 创建新项目时，先替换本节。
 
 - **项目名称**：TODO
 - **业务/产品领域**：TODO
@@ -27,84 +25,23 @@
 
 > TODO：说明本项目解决什么问题、服务什么场景、哪些核心假设必须长期保持成立。
 
-## 真值源与文档边界
+## 文档入口
 
-本项目采用以下文档分工：
-
-| 文档 | 负责内容 |
-|------|----------|
-| `AGENTS.md` | 项目规则、架构不变量、AI agent 工作流、协作约定、文档纪律 |
-| `README.md` | 项目入口、环境准备、编译、运行、测试、打包、发布命令 |
-| `docs/adr/` | 已经做出的架构决策及其理由 |
-| `docs/rfcs/` | 重大功能或架构方向在决策前的提案 |
-| `docs/specs/` | 功能/子系统的设计细节 |
-| `docs/plans/` | 可执行的实施计划和 checklist |
+| 文档 | 用途 |
+|------|------|
+| `README.md` | 项目介绍、环境准备、安装、编译、运行、测试、打包、发布 |
+| `CONTRIBUTING.md` | 人类贡献流程、PR 要求、review 要求 |
+| `docs/conventions.md` | 语言、文档、测试、安全、Dev Container 等长期约定 |
+| `docs/git.md` | Git 工作流、commit 规范、DCO、破坏性操作规则 |
+| `docs/adr/` | 已经做出的架构决策 |
+| `docs/rfcs/` | 决策前的较大提案 |
+| `docs/specs/` | 功能或子系统设计 |
+| `docs/plans/` | 可执行实施计划 |
 | 局部 `AGENTS.md` | 某个目录/模块的局部规则，补充根目录规则 |
 
-规则：
+本文件只保留 AI agent 必须先读的项目级规则。贡献指南、Git 规范、文档规范等细节放在上表对应文件中维护。
 
-1. 本文件不承载具体编译、运行、测试、发布命令；这些命令写在 `README.md`。
-2. ADR 记录“为什么做出这个决策”，不承载持续演进的项目约定。
-3. 持续演进的约定写在根目录 `AGENTS.md` 或局部 `AGENTS.md`。
-4. 变更架构、公开接口、项目结构、CI 门禁或协作流程时，必须在同一个 PR 中更新相关文档。
-5. 历史计划和设计文档不要静默删除；应标记为已完成、已废弃或已被替代。
-
-## 仓库结构
-
-> 创建新项目时，用真实结构替换本节。
-
-```text
-repo/
-  AGENTS.md
-  README.md
-  .devcontainer/
-    devcontainer.json
-    Dockerfile
-    compose.yaml          # 可选，仅在本地开发需要多服务时使用
-    scripts/              # 可选，容器初始化脚本
-  docs/
-    README.md
-    adr/
-    rfcs/
-    specs/
-    plans/
-    screenshots/
-  .github/
-    workflows/
-    PULL_REQUEST_TEMPLATE.md
-    CODEOWNERS
-  src/
-```
-
-目录规则：
-
-- 开发环境相关 Docker 文件统一放在 `.devcontainer/`。
-- 根目录不放开发用 `Dockerfile`。只有当项目明确发布生产容器镜像时，才允许在根目录或专用目录放生产镜像构建文件，并在 `README.md` 中说明。
-- 生成文件必须说明来源、生成命令、是否提交仓库，以及变更时如何校验。
-- 大模块如果有独立架构边界、依赖约束或修改 checklist，应在模块根目录放一个局部 `AGENTS.md`。
-
-## 开发环境
-
-默认开发环境是 Dev Container。
-
-宿主机依赖应保持最少：
-
-- Git
-- Docker / Docker Desktop
-- 支持 Dev Container 的编辑器或 AI agent 工具
-- 无法放进容器的平台原生 SDK、硬件工具或签名工具，必须在 `README.md` 中说明
-
-平台约定：
-
-- Windows 开发者优先使用 WSL2 工作区。
-- macOS/Linux 开发者按公司策略使用 Docker Desktop 或 Docker Engine。
-- 硬件访问、签名、公证、GUI 验证、平台安装包构建，可能需要原生机器或 self-hosted runner。
-
-模板默认 Dev Container 基于 Ubuntu 26.04 LTS。通用工具放在 `.devcontainer/Dockerfile`；语言工具链、SDK、数据库、模拟器、交叉编译器、硬件工具由派生项目按需添加并记录在 `README.md`。
-
-项目级安装、编译、运行、测试、发布命令只写在 `README.md`。
-
-## 架构
+## 架构边界
 
 > 创建新项目时，替换成本项目真实架构。
 
@@ -148,7 +85,7 @@ UI / 应用入口
 6. 平台特定逻辑必须隔离在清晰边界后，并有对应测试或验证路径。
 7. 破坏性操作需要人工确认，包括 force push、重写历史、批量删除、reset、生产数据修改。
 
-## AI 原生协作流程
+## AI Agent 工作流
 
 AI agent 是正式贡献者，必须遵守与人类相同的规则。
 
@@ -156,9 +93,10 @@ AI agent 是正式贡献者，必须遵守与人类相同的规则。
 
 1. 阅读根目录 `AGENTS.md`。
 2. 阅读 `README.md`，获取项目实际命令。
-3. 阅读将要修改目录下最近的局部 `AGENTS.md`。
-4. 如果任务涉及架构、设计或计划，阅读相关 ADR/RFC/spec/plan。
-5. 检查当前工作区状态，不回退用户或其他贡献者的改动。
+3. 阅读 `CONTRIBUTING.md`、`docs/conventions.md` 和 `docs/git.md`。
+4. 阅读将要修改目录下最近的局部 `AGENTS.md`。
+5. 如果任务涉及架构、设计或计划，阅读相关 ADR/RFC/spec/plan。
+6. 检查当前工作区状态，不回退用户或其他贡献者的改动。
 
 实施过程中，agent 必须：
 
@@ -174,193 +112,6 @@ AI agent 是正式贡献者，必须遵守与人类相同的规则。
 2. 明确说明哪些验证已运行、哪些未运行。
 3. 总结主要改动文件和残余风险。
 4. 不声称跨平台支持，除非 CI matrix 或原生平台验证已经证明。
-
-## 协作约定
-
-语言：
-
-- 本项目以中文为首选语言。项目文档、注释、ADR、RFC、Spec、Plan、提交信息、PR 描述和用户可见文案优先使用中文。
-- 技术术语、行业术语、专有名词、缩写、协议名、标准名、产品名、代码变量、函数名、类型名、模块名、文件名、命令、配置键、环境变量等保持英文或其所在生态的通用写法。
-- 不为了“全中文”而翻译已经稳定的英文术语。例如 API、SDK、CLI、CI、CD、HTTP、JSON、token、schema、runtime、adapter、plugin、handler、callback、middleware 等可直接使用英文。
-- 代码标识符遵循对应语言生态惯例，例如 `snake_case`、`camelCase`、`PascalCase`、`SCREAMING_SNAKE_CASE`。
-- 如果中文解释和英文术语同时出现，优先采用“中文说明 + 英文术语”的形式，例如“运行时 runtime”“适配器 adapter”“模式 schema”。
-
-Git：
-
-- PR 应小而可审。
-- 一个提交尽量只处理一个关注点。
-- 未经明确批准，不重写共享历史。
-- 不把无关重构混入功能或 bugfix。
-
-Commit 规范：
-
-- 默认采用 Conventional Commits 风格：
-
-  ```text
-  <type>(<scope>)!: <subject>
-
-  <body>
-
-  <footer>
-  ```
-
-- `type` 必须使用英文小写，允许值：
-
-  | type | 使用场景 |
-  |------|----------|
-  | `feat` | 新功能或能力 |
-  | `fix` | bug 修复 |
-  | `refactor` | 不改变外部行为的重构 |
-  | `perf` | 性能优化 |
-  | `test` | 测试新增或调整 |
-  | `docs` | 文档变更 |
-  | `build` | 构建系统、依赖、工具链 |
-  | `ci` | CI/CD 配置 |
-  | `chore` | 维护性杂项，不影响源码行为 |
-  | `style` | 格式、空白、排序等不改变语义的变更 |
-  | `revert` | 回退先前提交 |
-
-- `scope` 可选，使用英文，表示影响范围，例如 `api`、`web`、`core`、`docs`、`devcontainer`。
-- `!` 表示 breaking change。存在破坏性变化时必须使用 `!`，并在 body 或 footer 中说明迁移方式。
-- `subject` 使用中文优先，保留必要英文术语；使用祈使或陈述式短句，不加句号，尽量不超过 72 个字符。
-- body 可选，用于说明为什么改、怎么改、风险是什么；不要重复 diff 已经表达清楚的内容。
-- footer 可选，用于关联 Issue/PR、注明 breaking change 或 DCO 签署。
-- 默认每个 commit 必须带 DCO sign-off，即使用 `git commit -s`。如果派生项目不采用 DCO，必须在本节明确删除或改写这条规则。
-- 禁止使用无信息量提交信息，例如 `update`、`fix bug`、`misc`、`wip`、`changes`。
-- 仓库提供 `.gitmessage` 作为可选提交模板；需要时可执行 `git config commit.template .gitmessage`。
-
-示例：
-
-```text
-feat(api): 支持 OAuth callback
-fix(runtime): 修复 Windows 路径分隔符处理
-docs(agents): 明确 commit 规范
-build(devcontainer): 升级 Ubuntu 26.04 基础镜像
-refactor(core)!: 重命名 PluginRegistry 接口
-```
-
-破坏性变更示例：
-
-```text
-feat(config)!: 调整 provider 配置结构
-
-BREAKING CHANGE: `providers[].apiKey` 改为 `providers[].credentials.apiKey`。
-迁移时需要更新现有配置文件。
-```
-
-Code Review：
-
-- 先审项目不变量和行为风险，再看风格。
-- 公开 API、架构、数据模型、存储、协议、安全、平台支持变化，需要在 review 中重点关注。
-- PR 描述必须说明用户可见行为变化、迁移步骤、测试覆盖和必要的回滚方式。
-- UI 变化应提供截图或简短验证说明。
-
-## 文档规则
-
-### 新鲜度契约
-
-1. 代码变更导致文档失效时，必须在同一个 PR 更新文档。
-2. 易过期内容必须带日期，例如 roadmap、项目状态、迁移说明、已知技术债。
-3. 易漂移的引用应使用稳定路径、ADR 编号、Issue 编号、PR 编号或 commit SHA。
-4. 被文档引用的文件移动时，必须同步更新引用。
-5. AI 工具的 memory 不是权威来源；引用前必须回到仓库文件验证。
-
-### 文档触发表
-
-| 当你修改... | 必须更新... |
-|-------------|-------------|
-| 安装、编译、运行、测试、打包、发布命令 | `README.md` |
-| 项目级规则或架构不变量 | 根目录 `AGENTS.md` |
-| 模块局部契约或依赖约束 | 最近的局部 `AGENTS.md` |
-| 非显然架构决策 | `docs/adr/` 与 `docs/adr/README.md` |
-| 大功能或子系统设计 | `docs/rfcs/` 或 `docs/specs/` |
-| 多步骤实施工作 | `docs/plans/` |
-| CI 门禁或发布要求 | `README.md`、`AGENTS.md`、workflow 文档 |
-| 生成代码流程 | `README.md` 或所属模块的局部 `AGENTS.md` |
-| 环境变量 | `README.md` 与 `.env.example` |
-
-### ADR 规则
-
-需要写 ADR 的情况：
-
-- 决策建立或改变了架构不变量。
-- 拒绝过一个合理备选方案。
-- 决策影响多个模块、团队、平台或发布流程。
-- 从既有代码中发现未文档化但必须长期保持的约定。
-
-不需要写 ADR 的情况：
-
-- 单纯实施步骤。
-- 明显的局部代码选择。
-- 临时任务 checklist。
-
-ADR 文件放在：
-
-```text
-docs/adr/NNNN-title.md
-```
-
-新增 ADR 时必须更新 `docs/adr/README.md` 索引。
-
-### RFC 规则
-
-RFC 用于在最终决策前探索设计空间。一个被接受的 RFC 可以拆出一个或多个 ADR。
-
-RFC 文件放在：
-
-```text
-docs/rfcs/NNNN-title.md
-```
-
-### Spec 与 Plan 规则
-
-Spec 用于设计阶段：
-
-```text
-docs/specs/YYYY-MM-DD-topic-design.md
-```
-
-Plan 用于执行阶段：
-
-```text
-docs/plans/YYYY-MM-DD-topic.md
-```
-
-Plan 至少包含：
-
-- Goal
-- Architecture
-- Tech Stack
-- 预计变更文件
-- checkbox 任务
-- 验证步骤
-- 完成或废弃后的状态说明
-
-## 测试
-
-> 创建新项目时，替换成本项目真实测试分层。
-
-默认要求：
-
-- 单元测试覆盖局部业务逻辑。
-- 集成测试覆盖模块边界。
-- E2E 或系统测试覆盖关键用户路径。
-- 平台 matrix 测试覆盖项目承诺支持的平台。
-- bugfix 尽量补充能复现问题的回归测试。
-
-涉及行为变化的 PR 应说明：
-
-- 已测试什么。
-- 未测试什么。
-- 残余风险为什么可接受。
-
-## 安全与密钥
-
-- 密钥来自批准的密钥系统或本地未提交环境文件。
-- 只提交 `.env.example`，不提交真实 `.env`。
-- 不在日志中输出凭证、token、私有 URL、个人数据或专有业务 payload。
-- 对可复现性有要求的依赖、代码生成器、下载工具必须固定版本。
-- 访问生产数据需要明确人工批准，并记录回滚方式。
 
 ## 项目状态
 

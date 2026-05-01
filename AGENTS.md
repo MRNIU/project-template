@@ -163,7 +163,8 @@ App --> Store : TODO
 9. Docker 镜像名、Dev Container 显示名和运行时容器名必须在 README 或对应开发环境文档中声明，并在 `devcontainer.json`、CI、Docker Compose 和手动 `docker run` 示例中保持一致；不要依赖 Docker 自动生成的随机容器名作为常规入口。
 10. `.devcontainer/base.Dockerfile` 仅供模板仓库或自建基础镜像的项目保留。派生项目默认删除；确实保留时，必须在 README、CI 和镜像命名约定中说明发布目标、触发条件、维护责任和回滚方式。
 11. Docker、Docker Compose、Dev Container 或 CI 中的 bind mount，宿主机源路径必须是当前项目目录或其子目录，容器内目标路径必须落在项目工作区内。宿主机调用 Docker 编译、生成、打包或部署后，需要保留的产物必须写回当前项目目录下声明的产物目录，例如 `build/`、`dist/`、`target/`、`out/` 或项目自定义目录；README 必须同时声明容器内输出路径和宿主机可见路径，确保发布、部署、验收和回滚使用同一份产物，不能只留在容器临时文件系统或项目外路径。确实需要挂载项目外目录时，必须在 README、compose 文件注释或对应文档中说明理由、只读/读写边界和清理方式。
-12. 破坏性操作需要人工确认，包括 force push、重写历史、批量删除、reset、生产数据修改。
+12. 手写源代码文件原则上不超过 500 行；超过时必须说明职责边界、暂不拆分理由或拆分计划。详细规则见 `docs/conventions.md`。
+13. 破坏性操作需要人工确认，包括 force push、重写历史、批量删除、reset、生产数据修改。
 
 ## AI Agent 工作流
 

@@ -1,0 +1,89 @@
+# Copyright The Project Template Contributors
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/devcontainer
+
+jobs:
+  template:
+    name: Template and Dev Container
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check DCO sign-off
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+
+          if git rev-parse -q --verify HEAD^2 >/dev/null; then
+            range="HEAD^1..HEAD"
+          else
+            range="${{ github.event.pull_request.base.sha }}..HEAD"
+          fi
+
+          missing=0
+          for commit in $(git rev-list --no-merges "$range"); do
+            if ! git log -1 --format=%B "$commit" | grep -qi '^Signed-off-by:'; then
+              echo "::error title=Missing DCO sign-off::Commit $commit does not contain a Signed-off-by trailer."
+              missing=1
+            fi
+          done
+
+          exit "$missing"
+
+      - name: Build base image
+        run: |
+          docker build --pull \
+            -f .devcontainer/base.Dockerfile \
+            -t "${IMAGE_NAME}:latest" \
+            -t ghcr.io/libodynamics/project_template/devcontainer:latest \
+            .devcontainer
+
+      - name: Build derived devcontainer
+        run: |
+          docker build --pull=false \
+            -f .devcontainer/Dockerfile \
+            -t project-template-devcontainer:ci \
+            .devcontainer
+
+      - name: Run template checks in container
+        run: |
+          docker run --rm \
+            --mount "type=bind,src=${GITHUB_WORKSPACE},dst=/workspace" \
+            -e HOME=/tmp/project-template-ci \
+            -w /workspace \
+            project-template-devcontainer:ci \
+            bash -lc '
+              mkdir -p "$HOME" &&
+              git config --global --add safe.directory /workspace &&
+              pre-commit run --all-files &&
+              python3 --version &&
+              node --version &&
+              npm --version &&
+              rustc --version &&
+              cargo --version &&
+              cargo clippy --version &&
+              rustfmt --version &&
+              gh --version &&
+              pre-commit --version &&
+              devcontainer --version &&
+              mmdc --version &&
+              plantuml -version &&
+              ncu --version
+            '

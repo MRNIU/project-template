@@ -18,14 +18,16 @@
 ## 仓库结构
 
 ```text
-repo/
-  AGENTS.md
-  CONTRIBUTING.md
-  README.md
-  SECURITY.md
+  repo/
+    AGENTS.md
+    CONTRIBUTING.md
+    LICENSE
+    README.md
+    SECURITY.md
   .devcontainer/
     devcontainer.json
     Dockerfile
+    base.Dockerfile      # 模板仓库维护基础镜像时使用
     compose.yaml          # 可选，仅在本地开发需要多服务时使用
     scripts/              # 可选，容器初始化脚本
   docs/
@@ -81,21 +83,24 @@ repo/
 - macOS/Linux 开发者按公司策略使用 Docker Desktop 或 Docker Engine。
 - 硬件访问、签名、公证、GUI 验证、平台安装包构建，可能需要原生机器或 self-hosted runner。
 
-模板默认 Dev Container 基于 Ubuntu 26.04 LTS。通用工具放在 `.devcontainer/Dockerfile`；语言工具链、SDK、数据库、模拟器、交叉编译器、硬件工具由派生项目按需添加并记录在 `README.md`。
+模板默认 Dev Container 基于 `ghcr.io/libodynamics/project_template/devcontainer:latest`。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；基础镜像中的 Node.js 来自 Ubuntu archive，npm 升级到 latest 以匹配全局 npm 工具。派生项目用 `.devcontainer/Dockerfile` 继承 `latest` 后追加自己的语言工具链、SDK、数据库、模拟器、交叉编译器、硬件工具，并记录在 `README.md`。
+
+模板 Dev Container 默认使用 `dev` 用户作为交互用户，默认 shell 是 `zsh`，并允许免密码 `sudo`。Dockerfile 构建阶段仍按 Docker 默认行为使用 root；派生项目确实需要交互式密码时，必须在 README 说明原因和设置方式。
+
+Docker、Docker Compose、Dev Container 和 CI 示例中的 bind mount 必须保持在当前项目边界内：宿主机源路径使用仓库根目录或仓库内子目录，例如 `$PWD`、`${GITHUB_WORKSPACE}` 或 `${localWorkspaceFolder}`；容器内目标路径使用项目工作区，例如 `/workspace` 或 `${containerWorkspaceFolder}`。不要随意挂载宿主机全局目录、用户主目录、上级目录、系统目录或临时目录。确实需要挂载项目外目录时，必须说明用途、最小权限、只读/读写边界、数据生命周期和清理方式。
 
 项目级安装、编译、运行、测试、发布命令只写在 `README.md`。
 
 ## 依赖与版本策略
 
 - 原则上，项目使用的包、依赖、工具链、基础镜像和开发环境应采用当前可用的最新稳定版本。
-- 持续更新是默认要求。派生项目应在 README、CI、自动化依赖更新工具或维护计划中说明如何保持更新。
-- 版本锁定用于保证构建可复现，不代表永久冻结。锁文件、基础镜像 tag、工具链版本和 SDK 版本都需要定期更新。
-- 如果不能使用最新稳定版本，必须说明原因，例如平台兼容、客户认证、硬件 SDK 限制、监管要求、上游缺陷或安全例外。
-- 例外必须包含影响范围、替代方案和重新评估条件。
+- 公司模板默认使用 `latest` 策略。Dev Container 基础镜像、派生项目继承的基础镜像和通用开发工具不做长期版本冻结。
+- 持续更新是默认要求。派生项目应在 README、CI、自动化依赖更新工具或维护计划中说明如何跟随 `latest`。
+- 如果因为平台兼容、客户认证、硬件 SDK 限制、监管要求、上游缺陷或安全例外必须固定版本，必须在 `README.md`、本文件或对应 ADR 中说明影响范围、替代方案和重新评估条件。
 - 自动更新建议：
   - 依赖库：使用 Dependabot、Renovate 或平台等效工具。
-  - 容器基础镜像：定期检查 LTS tag 和安全公告。
-  - 语言工具链：优先跟随当前稳定版或项目声明的 LTS 线。
+  - 容器基础镜像：默认跟随 `latest`，定期重建并检查安全公告。
+  - 语言工具链：优先跟随当前稳定版或当前 LTS 线。
   - 开发容器：定期重新构建，避免缓存掩盖过期依赖。
 
 ## 第三方代码与生成物
@@ -136,13 +141,12 @@ repo/
 ## JSON 与 JSONC
 
 - 默认情况下，`.json` 文件应保持严格 JSON，避免注释和尾随逗号，以兼容通用解析器、CI、包管理器和第三方工具。
-- 只有明确由规范或主流工具声明支持 JSONC 的文件，才允许使用 JSONC。
-- `.devcontainer/devcontainer.json` 是例外：Dev Container 规范和 GitHub Codespaces 均将其定义为 JSONC（JSON with Comments），因此可以使用 `// Copyright ...` 形式的文件头。
+- 即使某些工具支持 JSONC，模板默认仍优先使用严格 JSON；需要版权或说明时，写在相邻文档、README、LICENSE/NOTICE 或生成脚本中，不在 JSON 文件里写注释。
+- 只有明确由规范或主流工具声明支持 JSONC 且项目确实需要注释的文件，才允许使用 JSONC，并必须配置匹配的校验工具。
 - 对于 `package.json`、API schema、数据 fixture、机器交换数据等严格 JSON 文件，不要使用注释或尾随逗号。
 - `tsconfig.json` 等部分生态配置虽然常见 JSONC 支持，但仍应按该工具链的官方说明和校验工具配置决定，不能把 JSONC 作为所有 `.json` 文件的默认格式。
 - 如果必须给严格 JSON 文件记录版权或元信息，优先使用规范允许的字段，例如 `_copyright`；如果 schema 不允许额外字段，则在相邻文档、LICENSE/NOTICE 或生成脚本中说明，不要破坏 JSON 兼容性。
 - 校验工具必须匹配格式：JSON 文件用 JSON parser；JSONC 文件用支持 comments 的 parser 或先剥离注释再校验。
-- 参考：Dev Container 规范说明 `devcontainer.json` 是 JSONC；GitHub Codespaces 文档也要求校验器按 JSONC 而不是 JSON 处理该文件。
 
 ## 文档规则
 
@@ -253,5 +257,5 @@ Plan 至少包含：
 - 密钥来自批准的密钥系统或本地未提交环境文件。
 - 只提交 `.env.example`，不提交真实 `.env`。
 - 不在日志中输出凭证、token、私有 URL、个人数据或专有业务 payload。
-- 对可复现性有要求的依赖、代码生成器、下载工具必须固定版本。
+- 对可复现性有强要求且不能跟随 `latest` 的依赖、代码生成器、下载工具，必须说明固定版本的原因、影响范围和重新评估条件。
 - 访问生产数据需要明确人工批准，并记录回滚方式。

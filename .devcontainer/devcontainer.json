@@ -1,20 +1,26 @@
-// Copyright The Project Template Contributors
 {
   "name": "project_template",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && pre-commit install --install-hooks && python3 --version && node --version && gh --version && pre-commit --version",
+  "remoteUser": "dev",
+  "updateRemoteUserUID": true,
+  "postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && pre-commit install --install-hooks && python3 --version && node --version && npm --version && rustc --version && cargo --version && cargo clippy --version && rustfmt --version && gh --version && pre-commit --version && devcontainer --version && mmdc --version && plantuml -version && ncu --version",
   "customizations": {
     "vscode": {
       "settings": {
         "editor.formatOnSave": true,
-        "terminal.integrated.defaultProfile.linux": "zsh"
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "rust-analyzer.cargo.allTargets": true,
+        "rust-analyzer.check.command": "clippy"
       },
       "extensions": [
         "EditorConfig.EditorConfig",
         "GitHub.vscode-pull-request-github",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "bierner.markdown-mermaid"
       ]
     }
   }

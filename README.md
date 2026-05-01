@@ -17,9 +17,24 @@ TODO：用一段话说明本项目是什么。
 ```bash
 git status --short --branch
 rg -n "TODO|YYYY-MM-DD|@TODO-owner" .
+docker build --pull -f .devcontainer/base.Dockerfile -t ghcr.io/libodynamics/project_template/devcontainer:latest .devcontainer
+docker build --pull=false -f .devcontainer/Dockerfile -t project-template-devcontainer:latest .devcontainer
 ```
 
 `TODO` 命中应来自模板占位或示例。新增、删除或移动模板文件时，应同步检查 `README.md`、`AGENTS.md`、`docs/README.md` 和 `docs/conventions.md` 中的文档入口。
+
+## 派生项目初始化 checklist
+
+使用本模板创建新项目后，至少完成以下事项：
+
+- [ ] 替换 `README.md`、`AGENTS.md`、`SECURITY.md` 和文档模板中的项目占位内容。
+- [ ] 确认项目名称、仓库名、包名、镜像名、Dev Container `name` 与发布目标。
+- [ ] 根据真实团队更新 `.github/CODEOWNERS`。
+- [ ] 确认 MIT 许可证是否适用；不适用时替换 `LICENSE` 并同步 README。
+- [ ] 补齐安装、编译、运行、测试、打包、发布命令及运行位置。
+- [ ] 补齐架构边界、运行模式、验证模式、硬件/外部服务依赖和残余风险。
+- [ ] 根据项目需要启用或调整 branch protection、DCO、CI、review 和发布门禁。
+- [ ] 删除不适用的硬件、生产、供应商、SOP 或文档模板章节。
 
 ## 快速开始
 
@@ -39,7 +54,7 @@ TODO：写清楚本项目实际使用的命令。
 
 默认使用 `.devcontainer/`。
 
-默认 Dev Container 使用 Ubuntu 26.04 LTS，并安装通用开发、文档和协作工具。语言工具链、SDK、数据库、模拟器、硬件工具由派生项目按需补充。
+默认 Dev Container 基于 `ghcr.io/libodynamics/project_template/devcontainer:latest`，并安装通用开发、文档、协作、Node.js 和 Rust 基础工具。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；派生项目在 `.devcontainer/Dockerfile` 中继续 `FROM` 该 `latest` 镜像并按需补充 SDK、数据库、模拟器、硬件工具或项目专用依赖。
 
 TODO：说明如何打开 Dev Container，以及本项目额外的 `postCreateCommand` 会安装什么。
 
@@ -92,6 +107,7 @@ TODO：说明如何打开 Dev Container，以及本项目额外的 `postCreateCo
 
 - `AGENTS.md`：人类和 AI agent 的项目规则
 - `CONTRIBUTING.md`：贡献流程和 PR 要求
+- `LICENSE`：默认 MIT 许可证，派生项目可按需要替换
 - `SECURITY.md`：安全漏洞报告流程
 - `docs/conventions.md`：语言、文档、测试、安全等项目约定
 - `docs/git.md`：Git 工作流和 commit 规范

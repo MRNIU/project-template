@@ -65,7 +65,7 @@ git config commit.template .gitmessage
 feat(api): 支持 OAuth callback
 fix(runtime): 修复 Windows 路径分隔符处理
 docs(agents): 明确 commit 规范
-build(devcontainer): 升级 Ubuntu 26.04 基础镜像
+build(devcontainer): 更新 latest 基础镜像
 refactor(core)!: 重命名 PluginRegistry 接口
 ```
 

@@ -15,7 +15,7 @@ TODO：用一段话说明本项目是什么。
 维护 `project_template` 仓库时，修改模板结构或规则后至少执行：
 
 ```bash
-docker build --pull -f .devcontainer/base.Dockerfile -t ghcr.io/libodynamics/project_template/devcontainer:latest .devcontainer
+docker build --pull -f .devcontainer/base.Dockerfile -t ghcr.io/ehapower/project_template/devcontainer:latest .devcontainer
 docker build --pull=false -f .devcontainer/Dockerfile -t project-template-devcontainer:latest .devcontainer
 DEVCONTAINER_USER="$(id -un | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
 DEVCONTAINER_BRANCH="$(git branch --show-current | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
@@ -67,7 +67,7 @@ TODO：写清楚本项目实际使用的命令。
 
 项目默认不维护宿主机本地运行路径。安装依赖、编译、运行、测试、生成、打包、发布和 pre-commit hooks 都必须先启动常驻后台的 Dev Container 容器，再通过 `docker exec "$DEVCONTAINER_NAME" ...` 或 CI/self-hosted runner 中的等价容器入口执行；宿主机只负责 Git 和 Docker/Dev Container 编排。
 
-默认 Dev Container 基于 `ghcr.io/libodynamics/project_template/devcontainer:latest`，并安装通用开发、文档、协作、Node.js 和 Rust 基础工具。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；派生项目在 `.devcontainer/Dockerfile` 中继续 `FROM` 该 `latest` 镜像并按需补充 SDK、数据库、模拟器、硬件工具或项目专用依赖。
+默认 Dev Container 基于 `ghcr.io/ehapower/project_template/devcontainer:latest`，并安装通用开发、文档、协作、Node.js 和 Rust 基础工具。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；派生项目在 `.devcontainer/Dockerfile` 中继续 `FROM` 该 `latest` 镜像并按需补充 SDK、数据库、模拟器、硬件工具或项目专用依赖。
 
 `.devcontainer/base.Dockerfile` 仅供 `project_template` 仓库维护通用基础镜像。派生项目默认删除它和对应的基础镜像发布 workflow；如果项目需要自建基础镜像，必须在本文件说明镜像名、tag 策略、发布 registry、触发条件、维护责任和回滚方式。
 
@@ -77,7 +77,7 @@ TODO：写清楚本项目实际使用的命令。
 
 | 用途 | 名称 |
 |------|------|
-| 基础 Dev Container 镜像 | `ghcr.io/libodynamics/project_template/devcontainer:latest` |
+| 基础 Dev Container 镜像 | `ghcr.io/ehapower/project_template/devcontainer:latest` |
 | 本地派生 Dev Container 镜像 | `project-template-devcontainer:latest` |
 | Dev Container 显示名 | `project-template-devcontainer` |
 | 常驻 Dev Container 容器名 | `project-template-devcontainer-{username}-{branch}` |

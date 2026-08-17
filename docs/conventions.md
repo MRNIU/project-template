@@ -100,7 +100,7 @@
 - macOS/Linux 开发者按公司策略使用 Docker Desktop 或 Docker Engine。
 - 硬件访问、签名、公证、GUI 验证、平台安装包构建如需平台能力，应优先由容器透传、远程服务、CI 或 self-hosted runner 提供；不要把开发者宿主机配置成项目运行环境。
 
-模板默认 Dev Container 基于 `ghcr.io/libodynamics/project_template/devcontainer:latest`。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；基础镜像中的 Node.js 来自 Ubuntu archive，npm 升级到 latest 以匹配全局 npm 工具。派生项目用 `.devcontainer/Dockerfile` 继承 `latest` 后追加自己的语言工具链、SDK、数据库、模拟器、交叉编译器、硬件工具，并记录在 `README.md`。
+模板默认 Dev Container 基于 `ghcr.io/ehapower/project_template/devcontainer:latest`。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；基础镜像中的 Node.js 来自 Ubuntu archive，npm 升级到 latest 以匹配全局 npm 工具。派生项目用 `.devcontainer/Dockerfile` 继承 `latest` 后追加自己的语言工具链、SDK、数据库、模拟器、交叉编译器、硬件工具，并记录在 `README.md`。
 
 `.devcontainer/base.Dockerfile` 仅用于维护基础镜像。派生项目默认删除它和对应的基础镜像发布 workflow；只有项目需要自建基础镜像供多个工作区、子项目或 CI 复用时才保留。保留时必须在 README 和 CI 中说明镜像名、tag 策略、发布 registry、触发条件、维护责任、更新节奏和回滚方式。
 

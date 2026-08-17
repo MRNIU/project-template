@@ -7,7 +7,7 @@
 模板仓库发布的基础镜像：
 
 ```Dockerfile
-FROM ghcr.io/libodynamics/project_template/devcontainer:latest
+FROM ghcr.io/ehapower/project_template/devcontainer:latest
 ```
 
 公司策略是统一使用 `latest`。派生项目默认继承这个镜像，并在自己的 `.devcontainer/Dockerfile` 中追加项目专用工具链、SDK、模拟器、数据库客户端、硬件工具或缓存配置。
@@ -34,7 +34,7 @@ steps:
 
 | 用途 | 名称 |
 |------|------|
-| 基础 Dev Container 镜像 | `ghcr.io/libodynamics/project_template/devcontainer:latest` |
+| 基础 Dev Container 镜像 | `ghcr.io/ehapower/project_template/devcontainer:latest` |
 | 本地派生 Dev Container 镜像 | `project-template-devcontainer:latest` |
 | Dev Container 显示名 | `project-template-devcontainer` |
 | 常驻 Dev Container 容器名 | `project-template-devcontainer-{username}-{branch}` |
@@ -45,7 +45,7 @@ steps:
 ## 文件分工
 
 - `devcontainer.json`
-- `Dockerfile`：派生项目默认入口，基于 `ghcr.io/libodynamics/project_template/devcontainer:latest`
+- `Dockerfile`：派生项目默认入口，基于 `ghcr.io/ehapower/project_template/devcontainer:latest`
 - `base.Dockerfile`：仅供模板仓库维护通用基础镜像，由 CI 发布到 GHCR；派生项目默认删除
 - `compose.yaml`：需要本地数据库、缓存、消息队列等服务时再添加
 - `scripts/`：容器初始化脚本
@@ -76,7 +76,7 @@ steps:
 不要把只有单个项目使用的工具强制装入基础镜像。派生项目按需要在 `.devcontainer/Dockerfile` 中追加：
 
 ```Dockerfile
-FROM ghcr.io/libodynamics/project_template/devcontainer:latest
+FROM ghcr.io/ehapower/project_template/devcontainer:latest
 
 # 嵌入式 / 内核 / 固件开发常见工具
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -102,7 +102,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 维护模板基础镜像时，宿主机只负责镜像构建、容器创建和容器启动。默认先启动一个可复用的常驻 Dev Container；后续所有检查通过 `docker exec` 在该容器中运行。
 
 ```bash
-docker build --pull -f .devcontainer/base.Dockerfile -t ghcr.io/libodynamics/project_template/devcontainer:latest .devcontainer
+docker build --pull -f .devcontainer/base.Dockerfile -t ghcr.io/ehapower/project_template/devcontainer:latest .devcontainer
 docker build --pull=false -f .devcontainer/Dockerfile -t project-template-devcontainer:latest .devcontainer
 DEVCONTAINER_USER="$(id -un | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
 DEVCONTAINER_BRANCH="$(git branch --show-current | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
@@ -139,7 +139,7 @@ Docker/Dev Container 中生成的编译、打包、部署或文档产物，必�
 CI 会在 `main` 分支和每周定时任务中把基础镜像发布为：
 
 ```text
-ghcr.io/libodynamics/project_template/devcontainer:latest
+ghcr.io/ehapower/project_template/devcontainer:latest
 ```
 
 ## 验证环境

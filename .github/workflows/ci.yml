@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BASE_DEVCONTAINER_IMAGE: ghcr.io/libodynamics/project_template/devcontainer
+  BASE_DEVCONTAINER_IMAGE: ghcr.io/ehapower/project_template/devcontainer
   DEVCONTAINER_IMAGE: project-template-devcontainer
 
 jobs:

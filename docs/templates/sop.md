@@ -22,9 +22,9 @@
 
 ## 产物来源
 
-| 产物 | 生成环境 | 宿主机路径 | 容器内路径 | 校验方式 | 回滚使用 |
+| 产物 | 生成环境 | 生成路径 | 归档位置 | 校验方式 | 回滚使用 |
 |------|----------|------------|------------|----------|----------|
-| TODO | TODO：常驻 Dev Container / CI / self-hosted runner | TODO | TODO | TODO | TODO |
+| TODO | TODO：开发环境 / CI / self-hosted runner | TODO | TODO | TODO | TODO |
 
 ## 流程图
 

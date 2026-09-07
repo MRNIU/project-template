@@ -24,12 +24,6 @@
     LICENSE
     README.md
     SECURITY.md
-  .devcontainer/
-    devcontainer.json
-    Dockerfile
-    base.Dockerfile      # 仅模板仓库或自建基础镜像的项目保留
-    compose.yaml          # 可选，仅在容器内开发需要多服务时使用
-    scripts/              # 可选，容器初始化脚本
   docs/
     README.md
     conventions.md
@@ -56,8 +50,6 @@
 
 目录规则：
 
-- 开发环境相关 Docker 文件统一放在 `.devcontainer/`。
-- 根目录不放开发用 `Dockerfile`。只有当项目明确发布生产容器镜像时，才允许在根目录或专用目录放生产镜像构建文件，并在 `README.md` 中说明。
 - 生成文件必须说明来源、生成命令、是否提交仓库，以及变更时如何校验。
 - 大模块如果有独立架构边界、依赖约束或修改 checklist，应在模块根目录放一个局部 `AGENTS.md`，推荐从 `docs/templates/local-AGENTS.md` 复制后改写。
 - 第三方源码、固件、C/C++ 库、硬件供应商 SDK 等可放在 `3rd/`，优先使用 git submodule 记录来源和版本。Rust Cargo、npm、pip、Go modules、Maven 等自带包管理器的依赖不放入 `3rd/`，应由对应 manifest/lockfile 管理。
@@ -76,68 +68,17 @@
 
 ## 开发环境
 
-默认开发和项目命令入口是常驻后台的 Dev Container。派生项目不维护宿主机本地运行路径；宿主机只负责 Git、Docker/Dev Container 编排，以及支持 Dev Container 的编辑器或 AI agent。
-
-宿主机依赖只保留：
-
-- Git
-- Docker / Docker Desktop
-- 支持 Dev Container 的编辑器或 AI agent 工具
-
-开发、编译、运行、测试、生成、打包、发布和 pre-commit hooks 过程中用到的工具、语言工具链、SDK、模拟器、数据库客户端和其他二进制文件，必须安装并运行在常驻 Dev Container 容器或 CI/self-hosted runner 声明的隔离环境中。项目不应要求贡献者通过 `brew`、系统包管理器或手工复制文件来修改宿主机全局环境；确实需要硬件、签名、GUI、网络或平台服务时，应通过 Docker device、volume、network、远程服务、CI 或 self-hosted runner 暴露给容器，并在 `README.md` 说明前置条件和替代验证路径。
-
-常驻 Dev Container 工作流：
-
-- 每个项目必须提供一个可长期运行在后台的 Dev Container 容器作为开发、编译、运行、测试、生成、打包和发布入口。
-- 容器启动后应复用同一个工作区 bind mount；后续命令通过 `docker exec`、`devcontainer exec`、编辑器终端或 AI agent 的容器终端进入容器执行。
-- 宿主机侧 wrapper 只能做容器发现、启动、停止、重建和 `exec` 转发，不得直接调用项目语言工具链、构建工具、测试工具或发布工具。
-- `docker run` 只能用于创建常驻后台容器，例如 `docker run -d ... sleep infinity`；项目命令和验证命令必须在容器启动后通过 `docker exec "$DEVCONTAINER_NAME" ...` 执行，不得使用一次性 `docker run --rm ... <项目命令>` 作为常规入口。
-- 需要重建同名容器时，必须确认旧容器没有需要保留的状态；需要保留的构建、测试、发布产物必须已经写回项目目录下声明的产物目录。
-
-平台约定：
-
-- Windows 开发者优先使用 WSL2 工作区。
-- macOS/Linux 开发者按公司策略使用 Docker Desktop 或 Docker Engine。
-- 硬件访问、签名、公证、GUI 验证、平台安装包构建如需平台能力，应优先由容器透传、远程服务、CI 或 self-hosted runner 提供；不要把开发者宿主机配置成项目运行环境。
-
-模板默认 Dev Container 基于 `ghcr.io/ehapower/project_template/devcontainer:latest`。模板仓库用 `.devcontainer/base.Dockerfile` 构建并发布这个基础镜像；基础镜像中的 Node.js 来自 Ubuntu archive，npm 升级到 latest 以匹配全局 npm 工具。派生项目用 `.devcontainer/Dockerfile` 继承 `latest` 后追加自己的语言工具链、SDK、数据库、模拟器、交叉编译器、硬件工具，并记录在 `README.md`。
-
-`.devcontainer/base.Dockerfile` 仅用于维护基础镜像。派生项目默认删除它和对应的基础镜像发布 workflow；只有项目需要自建基础镜像供多个工作区、子项目或 CI 复用时才保留。保留时必须在 README 和 CI 中说明镜像名、tag 策略、发布 registry、触发条件、维护责任、更新节奏和回滚方式。
-
-继承 private GHCR 基础镜像的项目，必须在 CI 中显式处理鉴权。GitHub Actions 优先使用 `GITHUB_TOKEN`：job permissions 至少包含 `contents: read` 和 `packages: read`，并在构建或使用镜像前通过 `docker/login-action` 登录 `ghcr.io`。同时，基础镜像 package 的 `Manage Actions access` 必须给调用方仓库授予 `Read` 权限。非 GitHub CI 或开发者本机只允许通过具备 `read:packages` scope 的个人或机器人 token 登录 registry；真实 token 不得写入 Dockerfile、Dev Container 配置、README、脚本默认值或提交历史。
-
-模板 Dev Container 默认使用 `dev` 用户作为交互用户，默认 shell 是 `zsh`，并允许免密码 `sudo`。Dockerfile 构建阶段仍按 Docker 默认行为使用 root；派生项目确实需要交互式密码时，必须在 README 说明原因和设置方式。
-
-Docker 命名约定：
-
-- README 或对应开发环境文档必须声明基础镜像名、本地开发镜像名、Dev Container 显示名、常驻 Dev Container 容器名和项目服务/应用运行时容器名。
-- `devcontainer.json`、CI、Docker Compose 和手动 `docker run` 示例必须复用同一组名称，不要让 Docker 为常规入口生成随机容器名。
-- 常驻 Dev Container 容器名必须使用 `{project}-devcontainer-{username}-{branch}`。
-- 项目服务或应用运行时容器名必须使用 `{project}-{service}-{username}-{branch}`。
-- 示例：`ranger-devcontainer-nzh-main`、`ranger-daemon-nzh-main`。
-- `username` 必须先归一化为 Docker 容器名允许的字符。
-- `service` 必须是 README 中声明的稳定服务标识，例如 `daemon`、`web`、`db`、`sim`。
-- `branch` 必须来自当前具名 Git 分支，例如 `git branch --show-current`。分支名中的 `/`、空格和其他特殊字符必须替换为 `-`。detached HEAD 状态不得启动常驻 Dev Container 或项目运行时容器，必须先切换到具名分支。
-- 使用 Dockerfile 或 image 方式的 Dev Container，应通过 `build.options` 补充稳定 tag，并通过 `runArgs` 固定常驻 Dev Container 容器名；README 必须提供设置 `DEVCONTAINER_NAME` 或等价环境变量的命令。使用 Docker Compose 时，应通过 `image`、service name 和需要时的 `container_name` 保持一致。
-- 需要同时打开多个 worktree 或多个克隆时，容器名仍必须使用当前具名 Git 分支作为后缀；同一宿主机、同一用户、同一项目、同一分支只允许一个常驻 Dev Container。
-
-Docker、Docker Compose、Dev Container 和 CI 示例中的 bind mount 必须保持在当前项目边界内：宿主机源路径使用仓库根目录或仓库内子目录，例如 `$PWD`、`${GITHUB_WORKSPACE}` 或 `${localWorkspaceFolder}`；容器内目标路径使用项目工作区，例如 `/workspace` 或 `${containerWorkspaceFolder}`。不要随意挂载宿主机全局目录、用户主目录、上级目录、系统目录或临时目录。
-
-宿主机通过 Docker/Dev Container 编排触发容器内编译、生成、打包、部署或文档构建时，需要保留的产物必须写回当前项目目录下声明的产物目录，例如 `build/`、`dist/`、`target/`、`out/`、`docs/generated/` 或项目自定义目录。README 必须同时声明宿主机可见路径和容器内输出路径，例如宿主机 `dist/` 对应容器 `/workspace/dist`。发布、部署、验收和回滚命令必须读取这个宿主机可见目录中的产物，命令不能把唯一产物留在容器临时文件系统、匿名 volume、用户主目录、上级目录或项目外缓存目录。确实需要挂载项目外目录时，必须说明用途、最小权限、只读/读写边界、数据生命周期和清理方式。
-
-项目级安装、编译、运行、测试、发布命令只写在 `README.md`。
+- 各项目自行选择开发环境，在 `README.md` 中声明安装方式、工具链、命令入口及 CI 所需条件。
+- 硬件访问、签名、GUI 或平台专用能力应说明前置条件和可用的验证路径。
+- 构建、生成、打包和发布产物应有明确的保存位置、校验方式和清理策略，供部署、验收与回滚复用。
+- 项目级安装、编译、运行、测试、发布命令只写在 `README.md`。
 
 ## 依赖与版本策略
 
-- 原则上，项目使用的包、依赖、工具链、基础镜像和开发环境应采用当前可用的最新稳定版本。
-- 公司模板默认使用 `latest` 策略。Dev Container 基础镜像、派生项目继承的基础镜像和通用开发工具不做长期版本冻结。
-- 持续更新是默认要求。派生项目应在 README、CI、自动化依赖更新工具或维护计划中说明如何跟随 `latest`。
-- 如果因为平台兼容、客户认证、硬件 SDK 限制、监管要求、上游缺陷或安全例外必须固定版本，必须在 `README.md`、本文件或对应 ADR 中说明影响范围、替代方案和重新评估条件。
-- 自动更新建议：
-  - 依赖库：使用 Dependabot、Renovate 或平台等效工具。
-  - 容器基础镜像：默认跟随 `latest`，定期重建并检查安全公告。
-  - 语言工具链：优先跟随当前稳定版或当前 LTS 线。
-  - 开发容器：定期重新构建，避免缓存掩盖过期依赖。
+- 原则上，依赖、工具链和开发环境采用当前可用的最新稳定版本，并持续更新。
+- 派生项目应在 README、CI、自动化依赖更新工具或维护计划中说明更新方式。
+- 因兼容性、认证、硬件 SDK 限制、上游缺陷或安全原因必须固定版本时，应说明影响范围、替代方案和重新评估条件。
+- 依赖库可使用 Dependabot、Renovate 或平台等效工具维护；语言工具链跟随当前稳定版或适用的 LTS 线。
 
 ## 第三方代码与生成物
 

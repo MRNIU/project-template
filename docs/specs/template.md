@@ -44,7 +44,7 @@ TODO：只保留适用的小节。
 - 硬件设计文档：TODO
 - 生产或部署 SOP：TODO
 - 供应商记录或第三方交付物：TODO
-- Docker/Dev Container 产物路径：TODO：宿主机路径与容器内路径必须匹配
+- 产物保存位置：TODO：供部署、验收和回滚使用
 - 需要更新的图表：TODO：Mermaid / PlantUML
 
 ## 风险

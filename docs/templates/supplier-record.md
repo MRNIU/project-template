@@ -49,9 +49,9 @@ Project --> Vendor : TODO：接口/协议/文件
 
 | 场景 | 步骤 | 运行位置 | 通过标准 | 回滚方式 |
 |------|------|----------|----------|----------|
-| 首次接入 | TODO | TODO：常驻 Dev Container / CI | TODO | TODO |
-| 版本升级 | TODO | TODO：常驻 Dev Container / CI | TODO | TODO |
-| 生产异常 | TODO | TODO：常驻 Dev Container / self-hosted runner / 产线容器环境 | TODO | TODO |
+| 首次接入 | TODO | TODO：开发环境 / CI | TODO | TODO |
+| 版本升级 | TODO | TODO：开发环境 / CI | TODO | TODO |
+| 生产异常 | TODO | TODO：CI / self-hosted runner / 产线环境 | TODO | TODO |
 
 ## 风险
 

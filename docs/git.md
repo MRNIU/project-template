@@ -10,7 +10,7 @@
 
 - PR 应小而可审。
 - 一个提交尽量只处理一个关注点。
-- pre-commit hooks 和提交前检查必须先启动常驻 Dev Container 容器，再通过 `docker exec`、`devcontainer exec` 或 CI/self-hosted runner 声明的等价容器入口运行；宿主机侧最多保留调用容器内命令的轻量入口。
+- pre-commit hooks 和提交前检查按 `README.md` 声明的命令和环境执行。
 - 未经明确批准，不重写共享历史。
 - 不把无关重构混入功能或 bugfix。
 - 破坏性操作需要人工确认，包括 force push、重写历史、批量删除、reset、生产数据修改。
@@ -45,7 +45,7 @@
 
 规则：
 
-- `scope` 可选，使用英文，表示影响范围，例如 `api`、`web`、`core`、`docs`、`devcontainer`。
+- `scope` 可选，使用英文，表示影响范围，例如 `api`、`web`、`core`、`docs`、`toolchain`。
 - `!` 表示 breaking change。存在破坏性变化时必须使用 `!`，并在 body 或 footer 中说明迁移方式。
 - `subject` 使用中文优先，保留必要英文术语；使用祈使或陈述式短句，不加句号，尽量不超过 72 个字符。
 - body 可选，用于说明为什么改、怎么改、风险是什么；不要重复 diff 已经表达清楚的内容。
@@ -65,7 +65,7 @@ git config commit.template .gitmessage
 feat(api): 支持 OAuth callback
 fix(runtime): 修复 Windows 路径分隔符处理
 docs(agents): 明确 commit 规范
-build(devcontainer): 更新 latest 基础镜像
+build(toolchain): 更新稳定版工具链
 refactor(core)!: 重命名 PluginRegistry 接口
 ```
 

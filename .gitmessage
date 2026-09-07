@@ -3,7 +3,7 @@
 <type>(<scope>): <subject>
 
 # type: feat|fix|refactor|perf|test|docs|build|ci|chore|style|revert
-# scope: optional, English identifier such as api, web, core, docs, devcontainer
+# scope: optional, English identifier such as api, web, core, docs, toolchain
 # subject: 中文优先，保留必要英文术语，不加句号，尽量不超过 72 个字符
 # breaking change: add ! before :, for example <type>(<scope>)!: <subject>
 #

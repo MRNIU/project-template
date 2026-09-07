@@ -12,17 +12,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  BASE_DEVCONTAINER_IMAGE: ghcr.io/ehapower/project_template/devcontainer
-  DEVCONTAINER_IMAGE: project-template-devcontainer
-
 jobs:
   template:
-    name: Template and Dev Container
+    name: Template checks
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
     steps:
       - uses: actions/checkout@v6
         with:
@@ -49,59 +44,12 @@ jobs:
 
           exit "$missing"
 
-      - name: Authenticate to GHCR
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build base image
+      - name: Install pre-commit
         run: |
-          docker build --pull \
-            -f .devcontainer/base.Dockerfile \
-            -t "${BASE_DEVCONTAINER_IMAGE}:latest" \
-            .devcontainer
+          python3 -m pip install --disable-pip-version-check pre-commit
 
-      - name: Build derived devcontainer
+      - name: Run template checks
         run: |
-          docker build --pull=false \
-            -f .devcontainer/Dockerfile \
-            -t "${DEVCONTAINER_IMAGE}:latest" \
-            .devcontainer
-
-      - name: Run template checks in container
-        run: |
-          DEVCONTAINER_BRANCH_SOURCE="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          DEVCONTAINER_BRANCH="$(printf '%s' "${DEVCONTAINER_BRANCH_SOURCE}" | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
-          if [ -z "${DEVCONTAINER_BRANCH}" ]; then echo "empty Git branch name is not allowed for the devcontainer name" >&2; exit 1; fi
-          DEVCONTAINER_CONTAINER="${DEVCONTAINER_IMAGE}-ci-${DEVCONTAINER_BRANCH}"
-
-          docker run -d \
-            --name "${DEVCONTAINER_CONTAINER}" \
-            --mount "type=bind,src=${GITHUB_WORKSPACE},dst=/workspace" \
-            -e HOME=/tmp/project-template-ci \
-            -w /workspace \
-            "${DEVCONTAINER_IMAGE}:latest" sleep infinity
-          trap 'docker rm -f "${DEVCONTAINER_CONTAINER}" >/dev/null 2>&1 || true' EXIT
-
-          docker exec "${DEVCONTAINER_CONTAINER}" bash -lc '
-              mkdir -p "$HOME" &&
-              git config --global --add safe.directory /workspace &&
-              git status --short --branch &&
-              rg -n "TODO|YYYY-MM-DD|@TODO-owner" . &&
-              pre-commit run --all-files &&
-              python3 --version &&
-              node --version &&
-              npm --version &&
-              rustc --version &&
-              cargo --version &&
-              cargo clippy --version &&
-              rustfmt --version &&
-              gh --version &&
-              pre-commit --version &&
-              devcontainer --version &&
-              mmdc --version &&
-              plantuml -version &&
-              ncu --version
-            '
+          git status --short --branch
+          git grep -n -E 'TODO|YYYY-MM-DD|@TODO-owner' -- . || [ "$?" -eq 1 ]
+          pre-commit run --all-files

@@ -23,7 +23,9 @@ rg -n "TODO|YYYY-MM-DD|@TODO-owner" .
 pre-commit run --all-files
 ```
 
-`TODO` 命中应来自模板占位或示例。新增、删除或移动模板文件时，同步检查 `README.md`、`AGENTS.md`、`docs/README.md` 和 `docs/conventions.md` 中的文档入口。CI 直接在 runner 中安装并运行 pre-commit。
+`TODO` 命中应来自模板占位或示例。新增、删除或移动模板文件时，同步检查 `README.md`、`AGENTS.md`、`docs/README.md` 和 `docs/conventions.md` 中的文档入口。
+
+模板仓库不配置 CI；派生项目按实际需求添加自己的 workflow。
 
 ## 派生项目初始化 checklist
 
